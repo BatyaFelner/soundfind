@@ -6,211 +6,75 @@
   <title>SoundFind — זהה שירים</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
-      --blue: #378ADD;
-      --blue-dark: #185FA5;
-      --blue-light: #E6F1FB;
-      --green: #1D9E75;
-      --coral: #D85A30;
-      --text: #1a1a1a;
-      --text-muted: #666;
-      --text-light: #999;
-      --bg: #f7f8fa;
-      --card: #ffffff;
-      --border: rgba(0,0,0,0.1);
+      --blue: #378ADD; --blue-dark: #185FA5;
+      --text: #1a1a1a; --text-muted: #666; --text-light: #999;
+      --bg: #f7f8fa; --card: #ffffff;
       --border-light: rgba(0,0,0,0.06);
-      --red: #E24B4A;
-      --red-bg: #FCEBEB;
+      --red: #E24B4A; --red-bg: #FCEBEB;
     }
-
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: var(--bg);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 2rem 1rem;
-      color: var(--text);
-      position: relative;
-      overflow-x: hidden;
-    }
-
-    /* background blobs */
-    body::before, body::after {
-      content: '';
-      position: fixed;
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 0;
+      background: var(--bg); min-height: 100vh;
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center; padding: 2rem 1rem;
+      color: var(--text); overflow-x: hidden;
     }
     body::before {
-      width: 500px; height: 500px;
+      content: ''; position: fixed; width: 500px; height: 500px; border-radius: 50%;
       background: radial-gradient(circle, rgba(55,138,221,0.12), transparent 70%);
-      top: -150px; right: -150px;
+      top: -150px; right: -150px; pointer-events: none; z-index: 0;
     }
-    body::after {
-      width: 400px; height: 400px;
-      background: radial-gradient(circle, rgba(29,158,117,0.1), transparent 70%);
-      bottom: -100px; left: -100px;
-    }
-
     .wrap { position: relative; z-index: 1; width: 100%; max-width: 440px; }
-
-    /* header */
     .header { text-align: center; margin-bottom: 2rem; }
-    .logo {
-      font-size: 36px; font-weight: 800; letter-spacing: -1.5px;
-      color: var(--text);
-    }
+    .logo { font-size: 36px; font-weight: 800; letter-spacing: -1.5px; }
     .logo em { color: var(--blue); font-style: normal; }
     .tagline { font-size: 14px; color: var(--text-muted); margin-top: 6px; }
-
-    /* card */
-    .card {
-      background: var(--card);
-      border-radius: 24px;
-      padding: 2rem;
-      box-shadow: 0 2px 24px rgba(0,0,0,0.06), 0 1px 4px rgba(0,0,0,0.04);
-      border: 1px solid var(--border-light);
-    }
-
-    /* record area */
-    .rec-area {
-      display: flex; flex-direction: column;
-      align-items: center; gap: 1rem; margin-bottom: 1.75rem;
-    }
-
-    .rec-ring {
-      position: relative; width: 130px; height: 130px; cursor: pointer;
-    }
+    .card { background: var(--card); border-radius: 24px; padding: 2rem; box-shadow: 0 2px 24px rgba(0,0,0,0.06); border: 1px solid var(--border-light); }
+    .rec-area { display: flex; flex-direction: column; align-items: center; gap: 1rem; margin-bottom: 1.75rem; }
+    .rec-ring { position: relative; width: 130px; height: 130px; cursor: pointer; }
     .rec-ring svg { position: absolute; inset: 0; width: 100%; height: 100%; }
     .ring-bg { fill: none; stroke: #eee; stroke-width: 3; }
-    .ring-fill {
-      fill: none; stroke: var(--blue); stroke-width: 3;
-      stroke-linecap: round;
-      stroke-dasharray: 360; stroke-dashoffset: 360;
-      transform: rotate(-90deg); transform-origin: center;
-      transition: stroke-dashoffset 1s linear;
-    }
-    .rec-face {
-      position: absolute; inset: 14px; border-radius: 50%;
-      background: #f0f4f8;
-      display: flex; flex-direction: column; align-items: center;
-      justify-content: center; gap: 4px;
-      transition: background 0.2s, transform 0.15s;
-      border: 1px solid var(--border-light);
-    }
+    .ring-fill { fill: none; stroke: var(--blue); stroke-width: 3; stroke-linecap: round; stroke-dasharray: 360; stroke-dashoffset: 360; transform: rotate(-90deg); transform-origin: center; transition: stroke-dashoffset 1s linear; }
+    .rec-face { position: absolute; inset: 14px; border-radius: 50%; background: #f0f4f8; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; transition: background 0.2s, transform 0.15s; border: 1px solid var(--border-light); }
     .rec-face:hover { background: #e4ecf4; transform: scale(1.04); }
     .rec-face:active { transform: scale(0.97); }
     .rec-face.on { background: #fff0f0; border-color: #f7c1c1; }
-    .mic-svg { fill: var(--text-muted); transition: fill 0.2s; }
+    .mic-svg { fill: var(--text-muted); }
     .rec-face.on .mic-svg { fill: var(--red); }
-    .rec-lbl {
-      font-size: 12px; font-weight: 600; color: var(--text-muted);
-      letter-spacing: 0.5px; text-transform: uppercase;
-    }
+    .rec-lbl { font-size: 12px; font-weight: 600; color: var(--text-muted); letter-spacing: 0.5px; text-transform: uppercase; }
     .rec-face.on .rec-lbl { color: var(--red); }
-
-    /* waveform */
     .wave { display: flex; align-items: flex-end; gap: 3px; height: 28px; opacity: 0; transition: opacity 0.3s; }
     .wave.live { opacity: 1; }
-    .wv {
-      width: 4px; border-radius: 3px; background: var(--blue);
-      animation: wvAnim 0.55s ease-in-out infinite alternate;
-    }
-    .wv:nth-child(1){height:7px;animation-delay:0s}
-    .wv:nth-child(2){height:18px;animation-delay:0.08s}
-    .wv:nth-child(3){height:25px;animation-delay:0.16s}
-    .wv:nth-child(4){height:13px;animation-delay:0.12s}
-    .wv:nth-child(5){height:22px;animation-delay:0.04s}
-    .wv:nth-child(6){height:9px;animation-delay:0.2s}
-    .wv:nth-child(7){height:20px;animation-delay:0.09s}
+    .wv { width: 4px; border-radius: 3px; background: var(--blue); animation: wvAnim 0.55s ease-in-out infinite alternate; }
+    .wv:nth-child(1){height:7px;animation-delay:0s}.wv:nth-child(2){height:18px;animation-delay:0.08s}.wv:nth-child(3){height:25px;animation-delay:0.16s}.wv:nth-child(4){height:13px;animation-delay:0.12s}.wv:nth-child(5){height:22px;animation-delay:0.04s}.wv:nth-child(6){height:9px;animation-delay:0.2s}.wv:nth-child(7){height:20px;animation-delay:0.09s}
     @keyframes wvAnim { 0%{transform:scaleY(0.3)} 100%{transform:scaleY(1)} }
-
     .timer { font-size: 13px; color: var(--text-muted); min-height: 18px; text-align: center; }
-
-    /* divider */
     .sep { display: flex; align-items: center; gap: 10px; margin: 0 0 1.25rem; }
     .sep hr { flex: 1; border: none; border-top: 1px solid var(--border-light); }
     .sep span { font-size: 12px; color: var(--text-light); }
-
-    /* upload */
-    .upload-box {
-      border: 1.5px dashed var(--border);
-      border-radius: 14px; padding: 1.25rem;
-      text-align: center; cursor: pointer;
-      transition: background 0.15s, border-color 0.15s;
-      margin-bottom: 1.25rem;
-    }
+    .upload-box { border: 1.5px dashed rgba(0,0,0,0.1); border-radius: 14px; padding: 1.25rem; text-align: center; cursor: pointer; transition: background 0.15s; margin-bottom: 1.25rem; }
     .upload-box:hover { background: #f5f8fc; border-color: var(--blue); }
     .upload-box svg { fill: var(--text-light); margin-bottom: 6px; }
     .upload-box p { font-size: 14px; color: var(--text-muted); }
     .upload-box small { font-size: 11px; color: var(--text-light); }
     #file-input { display: none; }
     .fname { font-size: 12px; color: var(--blue-dark); text-align: center; margin: -0.75rem 0 1rem; }
-
-    /* button */
-    .go-btn {
-      width: 100%; padding: 1rem;
-      border-radius: 14px; border: none;
-      background: var(--blue); color: #fff;
-      font-size: 16px; font-weight: 600;
-      cursor: pointer; display: flex; align-items: center;
-      justify-content: center; gap: 8px;
-      transition: background 0.2s, transform 0.1s;
-      box-shadow: 0 4px 14px rgba(55,138,221,0.35);
-    }
+    .go-btn { width: 100%; padding: 1rem; border-radius: 14px; border: none; background: var(--blue); color: #fff; font-size: 16px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: background 0.2s; box-shadow: 0 4px 14px rgba(55,138,221,0.35); }
     .go-btn:hover:not(:disabled) { background: var(--blue-dark); }
-    .go-btn:active:not(:disabled) { transform: scale(0.98); }
     .go-btn:disabled { opacity: 0.4; cursor: not-allowed; box-shadow: none; }
     .go-btn svg { fill: #fff; }
-
     .status { text-align: center; font-size: 13px; color: var(--text-muted); padding: 0.5rem 0; }
-    .err {
-      font-size: 13px; color: #A32D2D;
-      background: var(--red-bg); border-radius: 10px;
-      padding: 10px 14px; margin-top: 0.5rem;
-    }
-
-    /* result */
-    .result-card {
-      margin-top: 1.25rem;
-      background: var(--card);
-      border-radius: 20px;
-      overflow: hidden;
-      box-shadow: 0 2px 24px rgba(0,0,0,0.06);
-      border: 1px solid var(--border-light);
-    }
-    .res-top {
-      background: linear-gradient(135deg, #edf4fd, #e8f7f2);
-      padding: 1.25rem 1.5rem;
-      display: flex; align-items: center; gap: 14px;
-      border-bottom: 1px solid var(--border-light);
-    }
-    .disc {
-      width: 54px; height: 54px; border-radius: 50%;
-      background: var(--blue);
-      display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0;
-      animation: spin 5s linear infinite;
-    }
+    .err { font-size: 13px; color: #A32D2D; background: var(--red-bg); border-radius: 10px; padding: 10px 14px; margin-top: 0.5rem; }
+    .result-card { margin-top: 1.25rem; background: var(--card); border-radius: 20px; overflow: hidden; box-shadow: 0 2px 24px rgba(0,0,0,0.06); border: 1px solid var(--border-light); }
+    .res-top { background: linear-gradient(135deg, #edf4fd, #e8f7f2); padding: 1.25rem 1.5rem; display: flex; align-items: center; gap: 14px; border-bottom: 1px solid var(--border-light); }
+    .disc { width: 54px; height: 54px; border-radius: 50%; background: var(--blue); display: flex; align-items: center; justify-content: center; flex-shrink: 0; animation: spin 5s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
     .disc-hole { width: 14px; height: 14px; border-radius: 50%; background: #fff; }
-    .res-name { font-size: 18px; font-weight: 700; color: #0C447C; line-height: 1.2; }
+    .res-name { font-size: 18px; font-weight: 700; color: #0C447C; }
     .res-artist { font-size: 13px; color: #185FA5; margin-top: 3px; }
     .res-links { padding: 1rem 1.25rem; display: flex; flex-direction: column; gap: 8px; }
-    .lnk {
-      display: flex; align-items: center; gap: 10px;
-      padding: 11px 14px; border-radius: 12px;
-      border: 1px solid var(--border-light);
-      text-decoration: none; color: var(--text);
-      font-size: 14px; font-weight: 500;
-      background: #fafafa;
-      transition: background 0.15s;
-    }
+    .lnk { display: flex; align-items: center; gap: 10px; padding: 11px 14px; border-radius: 12px; border: 1px solid var(--border-light); text-decoration: none; color: var(--text); font-size: 14px; font-weight: 500; background: #fafafa; transition: background 0.15s; }
     .lnk:hover { background: #f0f4f8; }
     .lnk svg { fill: var(--text-muted); flex-shrink: 0; }
     .lnk .arr { margin-right: auto; }
@@ -223,7 +87,6 @@
       <div class="logo">sound<em>find</em></div>
       <p class="tagline">הקלט כמה שניות — נמצא לך את השיר</p>
     </div>
-
     <div class="card">
       <div class="rec-area">
         <div class="rec-ring" onclick="toggleRec()">
@@ -238,7 +101,6 @@
             <span class="rec-lbl" id="rec-lbl">הקלט</span>
           </div>
         </div>
-
         <div class="wave" id="wave">
           <div class="wv"></div><div class="wv"></div><div class="wv"></div>
           <div class="wv"></div><div class="wv"></div><div class="wv"></div>
@@ -246,9 +108,7 @@
         </div>
         <div class="timer" id="timer"></div>
       </div>
-
       <div class="sep"><hr/><span>או העלה קובץ</span><hr/></div>
-
       <div class="upload-box" onclick="document.getElementById('file-input').click()">
         <svg viewBox="0 0 24 24" width="28" height="28" style="display:block;margin:0 auto 8px">
           <path d="M9 16h6v-6h4l-7-7-7 7h4v6zm-4 2h14v2H5v-2z"/>
@@ -258,17 +118,13 @@
       </div>
       <input type="file" id="file-input" accept="audio/*" onchange="onFile(this)"/>
       <div class="fname" id="fname" style="display:none"></div>
-
       <button class="go-btn" id="go-btn" onclick="identify()" disabled>
-        <svg viewBox="0 0 24 24" width="18" height="18">
-          <path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
-        </svg>
+        <svg viewBox="0 0 24 24" width="18" height="18"><path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
         זהה שיר
       </button>
       <div class="status" id="status"></div>
       <div class="err" id="err" style="display:none"></div>
     </div>
-
     <div id="result-wrap" style="display:none">
       <div class="result-card">
         <div class="res-top">
@@ -282,116 +138,70 @@
       </div>
     </div>
   </div>
-
   <script>
-    let mr=null, chunks=[], recBlob=null, upFile=null, ticker=null, secs=0;
+    let mr=null,chunks=[],recBlob=null,upFile=null,ticker=null,secs=0;
     const MAX=15;
-
-    function toggleRec(){
-      mr && mr.state==='recording' ? stopRec() : startRec();
-    }
-
+    function toggleRec(){ mr&&mr.state==='recording'?stopRec():startRec(); }
     async function startRec(){
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({audio:true});
-        chunks = []; mr = new MediaRecorder(stream);
-        mr.ondataavailable = e => chunks.push(e.data);
-        mr.onstop = () => {
-          recBlob = new Blob(chunks, {type:'audio/wav'});
-          upFile = null;
-          document.getElementById('fname').style.display = 'none';
-          document.getElementById('go-btn').disabled = false;
-          stream.getTracks().forEach(t => t.stop());
-        };
-        mr.start(); secs = 0;
-        ticker = setInterval(() => {
-          secs++;
-          document.getElementById('timer').textContent = secs + ' שנ׳';
-          document.getElementById('ring').style.strokeDashoffset = 360 - (360 * secs / MAX);
-          if(secs >= MAX) stopRec();
-        }, 1000);
+      try{
+        const s=await navigator.mediaDevices.getUserMedia({audio:true});
+        chunks=[];mr=new MediaRecorder(s);
+        mr.ondataavailable=e=>chunks.push(e.data);
+        mr.onstop=()=>{ recBlob=new Blob(chunks,{type:'audio/wav'}); upFile=null; document.getElementById('fname').style.display='none'; document.getElementById('go-btn').disabled=false; s.getTracks().forEach(t=>t.stop()); };
+        mr.start();secs=0;
+        ticker=setInterval(()=>{ secs++; document.getElementById('timer').textContent=secs+' שנ׳'; document.getElementById('ring').style.strokeDashoffset=360-(360*secs/MAX); if(secs>=MAX)stopRec(); },1000);
         document.getElementById('rec-face').classList.add('on');
-        document.getElementById('mic-svg').innerHTML = '<path d="M12 1a4 4 0 0 1 4 4v6a4 4 0 0 1-8 0V5a4 4 0 0 1 4-4z" fill="#E24B4A"/><path d="M5 10a7 7 0 0 0 14 0h-2a5 5 0 0 1-10 0H5zm6 7.93V21H8v2h8v-2h-3v-3.07A7 7 0 0 0 19 11h-2a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.93z"/>';
-        document.getElementById('rec-lbl').textContent = 'עצור';
+        document.getElementById('mic-svg').innerHTML='<path d="M12 1a4 4 0 0 1 4 4v6a4 4 0 0 1-8 0V5a4 4 0 0 1 4-4z" fill="#E24B4A"/><path d="M5 10a7 7 0 0 0 14 0h-2a5 5 0 0 1-10 0H5zm6 7.93V21H8v2h8v-2h-3v-3.07A7 7 0 0 0 19 11h-2a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.93z"/>';
+        document.getElementById('rec-lbl').textContent='עצור';
         document.getElementById('wave').classList.add('live');
-        document.getElementById('result-wrap').style.display = 'none';
-        document.getElementById('err').style.display = 'none';
-      } catch(e) { showErr('לא ניתן לגשת למיקרופון. אפשרי גישה בדפדפן.'); }
+        document.getElementById('result-wrap').style.display='none';
+        document.getElementById('err').style.display='none';
+      }catch(e){showErr('לא ניתן לגשת למיקרופון.');}
     }
-
     function stopRec(){
-      if(mr) mr.stop();
-      clearInterval(ticker);
+      if(mr)mr.stop(); clearInterval(ticker);
       document.getElementById('rec-face').classList.remove('on');
-      document.getElementById('mic-svg').innerHTML = '<path d="M12 1a4 4 0 0 1 4 4v6a4 4 0 0 1-8 0V5a4 4 0 0 1 4-4zm-2 13.93A6 6 0 0 0 18 9h2a8 8 0 0 1-7 7.93V19h3v2H8v-2h3v-2.07A8 8 0 0 1 4 9h2a6 6 0 0 0 6 5.93z"/>';
-      document.getElementById('rec-lbl').textContent = 'הקלט שוב';
+      document.getElementById('mic-svg').innerHTML='<path d="M12 1a4 4 0 0 1 4 4v6a4 4 0 0 1-8 0V5a4 4 0 0 1 4-4zm-2 13.93A6 6 0 0 0 18 9h2a8 8 0 0 1-7 7.93V19h3v2H8v-2h3v-2.07A8 8 0 0 1 4 9h2a6 6 0 0 0 6 5.93z"/>';
+      document.getElementById('rec-lbl').textContent='הקלט שוב';
       document.getElementById('wave').classList.remove('live');
-      document.getElementById('ring').style.strokeDashoffset = 360;
-      document.getElementById('timer').textContent = '';
+      document.getElementById('ring').style.strokeDashoffset=360;
+      document.getElementById('timer').textContent='';
     }
-
-    function onFile(i){
-      if(i.files[0]){
-        upFile = i.files[0]; recBlob = null;
-        document.getElementById('fname').textContent = '📁 ' + upFile.name;
-        document.getElementById('fname').style.display = 'block';
-        document.getElementById('go-btn').disabled = false;
-        document.getElementById('result-wrap').style.display = 'none';
-        document.getElementById('err').style.display = 'none';
-      }
-    }
-
+    function onFile(i){ if(i.files[0]){ upFile=i.files[0];recBlob=null; document.getElementById('fname').textContent='📁 '+upFile.name; document.getElementById('fname').style.display='block'; document.getElementById('go-btn').disabled=false; document.getElementById('result-wrap').style.display='none'; document.getElementById('err').style.display='none'; } }
     async function identify(){
-      const f = recBlob || upFile;
-      if(!f){ showErr('אין קובץ אודיו'); return; }
-      document.getElementById('go-btn').disabled = true;
-      document.getElementById('status').textContent = 'מחפש... ⏳';
-      document.getElementById('err').style.display = 'none';
-      document.getElementById('result-wrap').style.display = 'none';
-      try {
-        const fd = new FormData();
-        fd.append('file', f, 'audio.wav');
-        const r = await fetch('/api/recognize', {method:'POST', body:fd});
-        const d = await r.json();
-        if(d.status==='success' && d.result) showResult(d.result);
-        else if(d.status==='success') showErr('לא זוהה שיר. נסי להקליט קטע ארוך יותר.');
-        else showErr(d.error?.error_message || 'שגיאה בזיהוי');
-      } catch(e){ showErr('שגיאת חיבור.'); }
-      document.getElementById('status').textContent = '';
-      document.getElementById('go-btn').disabled = false;
+      const f=recBlob||upFile; if(!f){showErr('אין קובץ אודיו');return;}
+      document.getElementById('go-btn').disabled=true;
+      document.getElementById('status').textContent='מחפש... ⏳';
+      document.getElementById('err').style.display='none';
+      document.getElementById('result-wrap').style.display='none';
+      try{
+        const fd=new FormData(); fd.append('file',f,'audio.wav');
+        const r=await fetch('/api/recognize',{method:'POST',body:fd});
+        const d=await r.json();
+        if(d.track){ showResult(d.track); }
+        else{ showErr('לא זוהה שיר. נסי להקליט קטע ארוך יותר.'); }
+      }catch(e){showErr('שגיאת חיבור.');}
+      document.getElementById('status').textContent='';
+      document.getElementById('go-btn').disabled=false;
     }
-
-    function showResult(r){
-      document.getElementById('res-name').textContent = r.title;
-      document.getElementById('res-artist').textContent = r.artist;
-      const el = document.getElementById('res-links'); el.innerHTML = '';
-      const q = encodeURIComponent(r.title + ' ' + r.artist);
-      mkLink(el, 'https://www.youtube.com/results?search_query='+q, 'YouTube',
-        'M10 15l5.19-3L10 9v6m11.56-7.83c.13.47.22 1.1.28 1.9.07.8.1 1.49.1 2.09L22 12c0 2.19-.16 3.8-.44 4.83-.25.9-.83 1.48-1.73 1.73-.47.13-1.33.22-2.65.28-1.3.07-2.49.1-3.59.1L12 19c-4.19 0-6.8-.16-7.83-.44-.9-.25-1.48-.83-1.73-1.73-.13-.47-.22-1.1-.28-1.9-.07-.8-.1-1.49-.1-2.09L2 12c0-2.19.16-3.8.44-4.83.25-.9.83-1.48 1.73-1.73.47-.13 1.33-.22 2.65-.28 1.3-.07 2.49-.1 3.59-.1L12 5c4.19 0 6.8.16 7.83.44.9.25 1.48.83 1.73 1.73z');
-      if(r.spotify?.external_urls?.spotify)
-        mkLink(el, r.spotify.external_urls.spotify, 'Spotify',
-          'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 14.36c-.19.31-.6.41-.91.22-2.49-1.52-5.63-1.87-9.32-1.02-.36.08-.71-.14-.79-.5-.08-.36.14-.71.5-.79 4.04-.92 7.51-.52 10.3 1.18.31.19.4.6.22.91zm1.23-2.77c-.24.38-.75.5-1.13.26-2.85-1.75-7.19-2.26-10.56-1.24-.43.13-.89-.11-1.02-.54-.13-.43.11-.89.54-1.02 3.85-1.17 8.63-.6 11.91 1.41.38.24.5.75.26 1.13zm.11-2.88C14.54 8.8 9.37 8.63 6.3 9.56c-.52.16-1.07-.14-1.22-.66-.16-.52.14-1.07.66-1.22 3.56-1.08 9.47-.87 13.21 1.43.46.27.61.87.34 1.33-.27.45-.87.6-1.31.27z');
-      else
-        mkLink(el, 'https://open.spotify.com/search/'+q, 'Spotify',
-          'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 14.36c-.19.31-.6.41-.91.22-2.49-1.52-5.63-1.87-9.32-1.02-.36.08-.71-.14-.79-.5-.08-.36.14-.71.5-.79 4.04-.92 7.51-.52 10.3 1.18.31.19.4.6.22.91zm1.23-2.77c-.24.38-.75.5-1.13.26-2.85-1.75-7.19-2.26-10.56-1.24-.43.13-.89-.11-1.02-.54-.13-.43.11-.89.54-1.02 3.85-1.17 8.63-.6 11.91 1.41.38.24.5.75.26 1.13zm.11-2.88C14.54 8.8 9.37 8.63 6.3 9.56c-.52.16-1.07-.14-1.22-.66-.16-.52.14-1.07.66-1.22 3.56-1.08 9.47-.87 13.21 1.43.46.27.61.87.34 1.33-.27.45-.87.6-1.31.27z');
-      if(r.apple_music?.url)
-        mkLink(el, r.apple_music.url, 'Apple Music',
-          'M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z');
-      document.getElementById('result-wrap').style.display = 'block';
+    function showResult(t){
+      document.getElementById('res-name').textContent=t.title;
+      document.getElementById('res-artist').textContent=t.subtitle;
+      const el=document.getElementById('res-links');el.innerHTML='';
+      const q=encodeURIComponent(t.title+' '+t.subtitle);
+      // YouTube
+      const yt=t.hub?.providers?.find(p=>p.caption==='YouTube')||null;
+      mkLink(el, yt ? 'https://www.youtube.com/watch?v='+yt.actions?.[0]?.uri : 'https://www.youtube.com/results?search_query='+q, 'YouTube','M10 15l5.19-3L10 9v6m11.56-7.83c.13.47.22 1.1.28 1.9.07.8.1 1.49.1 2.09L22 12c0 2.19-.16 3.8-.44 4.83-.25.9-.83 1.48-1.73 1.73-.47.13-1.33.22-2.65.28-1.3.07-2.49.1-3.59.1L12 19c-4.19 0-6.8-.16-7.83-.44-.9-.25-1.48-.83-1.73-1.73-.13-.47-.22-1.1-.28-1.9-.07-.8-.1-1.49-.1-2.09L2 12c0-2.19.16-3.8.44-4.83.25-.9.83-1.48 1.73-1.73.47-.13 1.33-.22 2.65-.28 1.3-.07 2.49-.1 3.59-.1L12 5c4.19 0 6.8.16 7.83.44.9.25 1.48.83 1.73 1.73z');
+      // Spotify
+      const sp=t.hub?.providers?.find(p=>p.caption==='Spotify')||null;
+      mkLink(el, sp ? sp.actions?.[0]?.uri : 'https://open.spotify.com/search/'+q, 'Spotify','M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 14.36c-.19.31-.6.41-.91.22-2.49-1.52-5.63-1.87-9.32-1.02-.36.08-.71-.14-.79-.5-.08-.36.14-.71.5-.79 4.04-.92 7.51-.52 10.3 1.18.31.19.4.6.22.91zm1.23-2.77c-.24.38-.75.5-1.13.26-2.85-1.75-7.19-2.26-10.56-1.24-.43.13-.89-.11-1.02-.54-.13-.43.11-.89.54-1.02 3.85-1.17 8.63-.6 11.91 1.41.38.24.5.75.26 1.13zm.11-2.88C14.54 8.8 9.37 8.63 6.3 9.56c-.52.16-1.07-.14-1.22-.66-.16-.52.14-1.07.66-1.22 3.56-1.08 9.47-.87 13.21 1.43.46.27.61.87.34 1.33-.27.45-.87.6-1.31.27z');
+      // Apple Music
+      const ap=t.hub?.providers?.find(p=>p.caption==='Apple Music')||null;
+      if(ap) mkLink(el, ap.actions?.[0]?.uri, 'Apple Music','M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z');
+      document.getElementById('result-wrap').style.display='block';
     }
-
-    function mkLink(c, url, label, path){
-      const a = document.createElement('a');
-      a.className = 'lnk'; a.href = url; a.target = '_blank';
-      a.innerHTML = `<svg viewBox="0 0 24 24" width="20" height="20"><path d="${path}"/></svg>${label}<span class="arr"><svg viewBox="0 0 24 24" width="14" height="14"><path d="M19 19H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg></span>`;
-      c.appendChild(a);
-    }
-
-    function showErr(m){
-      document.getElementById('err').textContent = m;
-      document.getElementById('err').style.display = 'block';
-      document.getElementById('status').textContent = '';
-    }
+    function mkLink(c,url,label,path){ if(!url)return; const a=document.createElement('a'); a.className='lnk';a.href=url;a.target='_blank'; a.innerHTML=`<svg viewBox="0 0 24 24" width="20" height="20"><path d="${path}"/></svg>${label}<span class="arr"><svg viewBox="0 0 24 24" width="14" height="14"><path d="M19 19H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg></span>`; c.appendChild(a); }
+    function showErr(m){ document.getElementById('err').textContent=m; document.getElementById('err').style.display='block'; document.getElementById('status').textContent=''; }
   </script>
 </body>
 </html>
