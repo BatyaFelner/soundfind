@@ -178,7 +178,7 @@
         const fd=new FormData(); fd.append('file',f,'audio.wav');
         const r=await fetch('/api/recognize',{method:'POST',body:fd});
         const d=await r.json();
-        if(d.track){ showResult(d.track); }
+        if(d.status==='success'&&d.result){ showResult(d.result); }
         else{ showErr('לא זוהה שיר. נסי להקליט קטע ארוך יותר.'); }
       }catch(e){showErr('שגיאת חיבור.');}
       document.getElementById('status').textContent='';
