@@ -216,13 +216,20 @@
       document.getElementById('go-btn').disabled=false;
     }
 
-    function tryLyricsSearch(){
+    async function tryLyricsSearch(){
       if(detectedText && detectedText.trim().length > 2){
         const text = detectedText.trim();
-        const q = encodeURIComponent(text + ' מילות שיר');
         document.getElementById('lyrics-box').textContent='זוהו המילים: "' + text + '"';
         document.getElementById('lyrics-box').style.display='block';
-        showLyricsResult(text, q);
+        document.getElementById('status').textContent='מחפש ב-YouTube... 🔍';
+        try {
+          const res = await fetch('/api/search', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({query: text})});
+          const d = await res.json();
+          showLyricsResult(text, d.results || []);
+        } catch(e) {
+          showLyricsResult(text, []);
+        }
+        document.getElementById('status').textContent='';
       } else {
         showErr('לא זוהה שיר. נסי להקליט קטע ארוך יותר עם מילים ברורות.');
       }
@@ -242,14 +249,19 @@
       document.getElementById('result-wrap').style.display='block';
     }
 
-    function showLyricsResult(text, q){
+    function showLyricsResult(text, results){
       document.getElementById('res-disc').className='disc lyrics-disc';
       document.getElementById('res-name').textContent='חיפוש לפי מילים';
       document.getElementById('res-artist').textContent='"' + text + '"';
-      document.getElementById('res-method').textContent='זוהו מילים — לחצי לחיפוש 🔍';
+      document.getElementById('res-method').textContent='זוהו מילים — לחצי לצפייה 🔍';
       const el=document.getElementById('res-links');el.innerHTML='';
-      mkLink(el,'https://www.youtube.com/results?search_query='+q,'חפש ב-YouTube','M10 15l5.19-3L10 9v6m11.56-7.83c.13.47.22 1.1.28 1.9.07.8.1 1.49.1 2.09L22 12c0 2.19-.16 3.8-.44 4.83-.25.9-.83 1.48-1.73 1.73-.47.13-1.33.22-2.65.28-1.3.07-2.49.1-3.59.1L12 19c-4.19 0-6.8-.16-7.83-.44-.9-.25-1.48-.83-1.73-1.73-.13-.47-.22-1.1-.28-1.9-.07-.8-.1-1.49-.1-2.09L2 12c0-2.19.16-3.8.44-4.83.25-.9.83-1.48 1.73-1.73.47-.13 1.33-.22 2.65-.28 1.3-.07 2.49-.1 3.59-.1L12 5c4.19 0 6.8.16 7.83.44.9.25 1.48.83 1.73 1.73z');
-      mkLink(el,'https://open.spotify.com/search/'+encodeURIComponent(text),'חפש ב-Spotify','M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 14.36c-.19.31-.6.41-.91.22-2.49-1.52-5.63-1.87-9.32-1.02-.36.08-.71-.14-.79-.5-.08-.36.14-.71.5-.79 4.04-.92 7.51-.52 10.3 1.18.31.19.4.6.22.91zm1.23-2.77c-.24.38-.75.5-1.13.26-2.85-1.75-7.19-2.26-10.56-1.24-.43.13-.89-.11-1.02-.54-.13-.43.11-.89.54-1.02 3.85-1.17 8.63-.6 11.91 1.41.38.24.5.75.26 1.13zm.11-2.88C14.54 8.8 9.37 8.63 6.3 9.56c-.52.16-1.07-.14-1.22-.66-.16-.52.14-1.07.66-1.22 3.56-1.08 9.47-.87 13.21 1.43.46.27.61.87.34 1.33-.27.45-.87.6-1.31.27z');
+      if(results && results.length > 0){
+        results.forEach(r => {
+          mkLink(el, r.url, r.title.substring(0,40), 'M10 15l5.19-3L10 9v6m11.56-7.83c.13.47.22 1.1.28 1.9.07.8.1 1.49.1 2.09L22 12c0 2.19-.16 3.8-.44 4.83-.25.9-.83 1.48-1.73 1.73-.47.13-1.33.22-2.65.28-1.3.07-2.49.1-3.59.1L12 19c-4.19 0-6.8-.16-7.83-.44-.9-.25-1.48-.83-1.73-1.73-.13-.47-.22-1.1-.28-1.9-.07-.8-.1-1.49-.1-2.09L2 12c0-2.19.16-3.8.44-4.83.25-.9.83-1.48 1.73-1.73.47-.13 1.33-.22 2.65-.28 1.3-.07 2.49-.1 3.59-.1L12 5c4.19 0 6.8.16 7.83.44.9.25 1.48.83 1.73 1.73z');
+        });
+      } else {
+        mkLink(el,'https://open.spotify.com/search/'+encodeURIComponent(text),'חפש ב-Spotify','M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 14.36c-.19.31-.6.41-.91.22-2.49-1.52-5.63-1.87-9.32-1.02-.36.08-.71-.14-.79-.5-.08-.36.14-.71.5-.79 4.04-.92 7.51-.52 10.3 1.18.31.19.4.6.22.91zm1.23-2.77c-.24.38-.75.5-1.13.26-2.85-1.75-7.19-2.26-10.56-1.24-.43.13-.89-.11-1.02-.54-.13-.43.11-.89.54-1.02 3.85-1.17 8.63-.6 11.91 1.41.38.24.5.75.26 1.13zm.11-2.88C14.54 8.8 9.37 8.63 6.3 9.56c-.52.16-1.07-.14-1.22-.66-.16-.52.14-1.07.66-1.22 3.56-1.08 9.47-.87 13.21 1.43.46.27.61.87.34 1.33-.27.45-.87.6-1.31.27z');
+      }
       document.getElementById('result-wrap').style.display='block';
     }
 
