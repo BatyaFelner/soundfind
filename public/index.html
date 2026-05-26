@@ -185,8 +185,8 @@
       document.getElementById('go-btn').disabled=false;
     }
     function showResult(t){
-      document.getElementById('res-name').textContent=t.title;
-      document.getElementById('res-artist').textContent=t.subtitle;
+      document.getElementById('res-name').textContent=r.title;
+      document.getElementById('res-artist').textContent=r.artist;
       const el=document.getElementById('res-links');el.innerHTML='';
       const q=encodeURIComponent(t.title+' '+t.subtitle);
       // YouTube
