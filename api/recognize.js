@@ -16,17 +16,14 @@ export default async function handler(req) {
       });
     }
 
-    const arrayBuffer = await audioFile.arrayBuffer();
-    const base64Audio = btoa(String.fromCharCode(...new Uint8Array(arrayBuffer)));
+    const auddForm = new FormData();
+    auddForm.append('file', audioFile, 'audio.wav');
+    auddForm.append('api_token', process.env.AUDD_API_KEY);
+    auddForm.append('return', 'apple_music,spotify');
 
-    const response = await fetch('https://shazam.p.rapidapi.com/songs/v2/detect?timezone=Asia%2FJerusalem&locale=he-IL', {
+    const response = await fetch('https://api.audd.io/', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'text/plain',
-        'x-rapidapi-host': 'shazam.p.rapidapi.com',
-        'x-rapidapi-key': process.env.RAPIDAPI_KEY,
-      },
-      body: base64Audio,
+      body: auddForm,
     });
 
     const data = await response.json();
